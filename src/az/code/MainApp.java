@@ -8,7 +8,6 @@ import az.code.service.ProductService;
 import java.util.*;
 
 public class MainApp {
-    MarketService marketService = new MarketService();
 
     public static void main(String[] args) {
         Product milk = new Product(1,"Milk", ProductType.DAIRY,50,2.4);
@@ -82,6 +81,7 @@ public class MainApp {
         System.out.println("8 - Show Sale Info by Sale Number");
 
         int choice = getChoice(8);
+        MarketService.saleLogic(choice);
     }
 
     public static int getChoice(int range) {

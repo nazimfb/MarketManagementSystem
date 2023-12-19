@@ -5,6 +5,12 @@ public class PurchaseItem {
     private long productCode;
     private int count;
 
+    public PurchaseItem(Long id, long productCode, int count) {
+        this.id = id;
+        this.productCode = productCode;
+        this.count = count;
+    }
+
     public Long getId() {
         return id;
     }

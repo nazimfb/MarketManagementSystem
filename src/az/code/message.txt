@@ -1,27 +1,25 @@
-Market idare etmek sistemini
-Marketdeki mehsullarin idare edilmesi ucun program
+Market idarə etmək sistemi
+Marketdəki məhsulların idarə edilməsi üçün program
 
-Her bir mehsulun 
- - ad
- - qiymet
- - kateqoriyasi (enum)
- - say
- - kodu  var
+Hər bir məhsulun
+            - adı
+            - qiyməti
+            - kateqoriyasi (enum)
+            - sayı
+            - kodu  var
 
-Her bir satisin
- 
-  - nomresi
-  - meblegi
-  - SatisItem-lari
-  - tarixi
+Hər bir satışın
+            - nömrəsi
+            - məbləği
+            - Satış item-lari
+            - tarixi
+Hər bir satış item-inin
+            - Nomersi
+            - Mehsul
+            - Say
 
-Her bir satis item-inin
-  Nomersi
-  Mehsul
-  Say
 
 IMarketable
-
  - Satislar
  - Mehsullar
  - Satis elave etmek - satis elave edilerken hansi mehsullardan hansi sayda satis oldugu gonderilir
@@ -45,9 +43,9 @@ Proses:
     -1 Mehsullar uzerinde emeliyyat aparmaq
     -2 Satislar uzerinde emeliyyat aparmaq
     -3 Sistemden cixmaq
-        
+
 1.1 1 secildikde Mehsullar uzerinde aparila bilinecek emeliyyatlarla bagli secimler gosterilir:
-    
+
     - 1 Yeni mehsul elave et  - userden yeni mehsul yaradilmasi ucun lazim olan melumatlari daxil edilmelidir
     - 2 Mehsul uzerinde duzelis et -  duzelis edilecek mehsulun code-u ve duzelis melumatlari daxil edilmelidir
     - 3 Mehsulu sil - mehsulu kodu daxil edilmelidir
@@ -55,9 +53,9 @@ Proses:
     - 5 Categoriyasina gore mehsullari goster - usere var olan kateqoriyalar gosteilecek ve onlar arasinda bir secim etmelidir ve secilmis kateqoriyadan olan butun mehsullar gosterilir (kodu,adi,categoriyasi,sayi,qiymeti)
     - 6 Qiymet araligina gore mehsullari goster - userden minmum ve maximum qiymetleri daxil etmesi istenilir ve hemin qiymet araliginda olan mehsullar gosterilir (kodu, adi,categoriyasi,sayi,qiymeti)
     - 7 Mehsullar arasinda ada gore axtaris et - useden text daxil etmesi istenilir ve adinda hemin text olan butun mehsullar gosterilir (kodu, adi,categoriyasi,sayi,qiymeti)
-    
+
 1.2 2 secildikde satislar uzerinde aparila bilinecek emeliyyatlarla bagli secimler gosterilir:
-    
+
     - 1 Yeni satis elave etmek - istifadeciden satis yaradilmasi ucun lazimi meulatlarin daxil edilmesi istenilir (mehsullarin kodlari)
     - 2 Satisdaki hansisa mehsulun geri qaytarilmasi( satisdan cixarilmasi) - userden satisin,cixarilacaq mehsulun ve sayinin daxil edilmesi istenilir
     - 3 Satisin silinmesi - satisin nomresine esasen silinmesi

@@ -9,8 +9,15 @@ public class Purchase {
     List<PurchaseItem> purchaseItems;
     LocalDateTime creationDate;
 
+    public Purchase(long id, double totalPrice, List<PurchaseItem> purchaseItems, LocalDateTime creationDate) {
+        this.id = id;
+        this.totalPrice = totalPrice;
+        this.purchaseItems = purchaseItems;
+        this.creationDate = creationDate;
+    }
+
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -27,6 +34,9 @@ public class Purchase {
 
     public List<PurchaseItem> getPurchaseItems() {
         return purchaseItems;
+    }
+    public int getPurchaseItemsCount() {
+        return this.purchaseItems.toArray().length;
     }
 
     public void setPurchaseItems(List<PurchaseItem> purchaseItems) {

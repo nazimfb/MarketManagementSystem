@@ -3,149 +3,86 @@ package az.code.service;
 import az.code.model.Product;
 import az.code.model.ProductType;
 import az.code.model.Purchase;
+import az.code.model.PurchaseItem;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.Scanner;
 
 public class MarketService {
-    private List<Purchase> purchases;
-
 //    public MarketService() {
 //        products = new ArrayList<>();
-//        purchases = new ArrayList<>();
 //    }
 //
 //    public void addSale(Product product) {
 //        product.setCode(1);
 //        products.add(product);
 //    }
+    static List<Purchase> purchases = new ArrayList<>();
 
-    public static void productLogic(int choice){
+    public static void saleLogic(int choice){
+        List<PurchaseItem> purchaseItemList = new ArrayList<>();
+
         Scanner sc =  new Scanner(System.in);
-        List<String> categoryList = new ArrayList<>();
-        for (ProductType p : EnumSet.allOf(ProductType.class)) {
-            categoryList.add(String.valueOf(p));
-        }
-
         switch (choice){
             case 1 -> {
-                System.out.println("Available Categories: " + categoryList);
-                System.out.print("Input Product Category: ");
-                String catName = sc.nextLine();
-                while(!categoryList.contains(catName)){
-                    System.out.print("False category name. Try again:");
-                    catName = sc.nextLine();
-                }
+                System.out.println("How many types of products will be sold: ");
+                int productsCount = Integer.valueOf(sc.nextLine());
 
-                System.out.print("Input Product name: ");
-                String name = sc.nextLine();
-                System.out.print("Input Product code: ");
-                long code = sc.nextLong();
-                System.out.print(String.format("How many %ss: ",name));
-                int count = sc.nextInt();
-                System.out.print("Input Product Price: ");
-                double price = sc.nextDouble();
+                String[] str;
+                PurchaseItem purchaseItem;
 
-                Product product = new Product(code,name, ProductType.valueOf(catName),count,price);
-                ProductService.products.add(product);
-                System.out.println("Product " + product + "has been added.");
-            }
-            case 2 -> {
-                System.out.print("Enter product code which you want to change: ");
-                long code = sc.nextLong();
+                long purchaseItemRandomId;
+                double totalPrice = 0;
+                long code;
+                int count;
 
-                for (Product product : products) {
-                    if(product.getCode()==code){
-                        System.out.print("Enter new name([Enter]=pass): ");
-                        String newName = sc.nextLine();
-                        if(newName.isEmpty()){
-                            newName=product.getName();
+                for (int i = 1; i <= productsCount; i++) {
+                    System.out.print("Input Product <code:count>: ");
+                    str = sc.nextLine().split(":");
+                    code = Long.valueOf(str[0]);
+                    count = Integer.valueOf(str[1]);
+                    if (count>0) {
+                        for (Product p: ProductService.products){
+                            if (p.getCount()>=count && p.getCode()==code){
+                                totalPrice += (p.getPrice()*count);
+                                purchaseItemRandomId = (long) Math.random()*100000;
+//                                for(PurchaseItem pI:purchaseItemList){
+//                                    if(pI.getId()==purchaseItemRandomId){
+//                                        System.out.printf("Purchase Item with id %d already exists.",purchaseItemRandomId);
+//    //                                  break;
+//                                        purchaseItemRandomId = (long) Math.random()*100000;
+//                                    }
+//                                }
+                                p.setCount(p.getCount()-count);
+                                purchaseItem = new PurchaseItem(1L,p.getCode(),count);
+                                purchaseItemList.add(purchaseItem);
+                                }
                         }
-                        System.out.print("Enter new price([Enter]=pass): ");
-                        double newPrice = sc.nextDouble();
-                        if(!sc.hasNextDouble()){
-                            newName=product.getName();
+                    }
+                        else if(count<=0){
+                            System.out.println("<count> should be positive number");
                         }
-
-                        System.out.print("Enter new count([Enter]=pass): ");
-                        int newCount = sc.nextInt();
-                        if(!sc.hasNextInt())
-                            newCount=product.getCount();
-
-                        product = new Product(product.getCode(),newName,product.getCategory(),newCount,newPrice);
-                        System.out.println("Product has been changed.");
                     }
-                }
+                LocalDateTime date = LocalDateTime.now();
+                long id = (long) (Math.random()*100001);
+                Purchase purchase = new Purchase(id,totalPrice,purchaseItemList, date);
+                purchases.add(purchase);
+                System.out.printf("Sale created with id: %d, total price: %f date: %s",purchase.getId(),purchase.getTotalPrice(),String.valueOf(date) + "\n");
+            }
 
-            }
-            case 3 -> {
-                System.out.print("Enter product code which you want to delete: ");
-                long code = sc.nextLong();
-                for (Product product : products) {
-                    if (product.getCode() == code) {
-                        products.remove(product);
-                        System.out.println("Product is deleted.");
-                        break;
-                    }
+            case 4 ->{
+                System.out.println("All purchases: ");
+                for (Purchase p:purchases) {
+                    System.out.println("Purchase " + p.getId() + " totalPrice: " + p.getTotalPrice()
+                            + " mehsul sayi: " + p.getPurchaseItemsCount() + " tarixi: " + p.getCreationDate());
                 }
-            }
-            case 4 -> {
-                System.out.println("All Available Products: \n" + products + " Products " +
-                        "count: " + products.toArray().length);
-            }
-            case 5 -> {
-                System.out.println("Available Categories: " + categoryList);
-                System.out.print("Input Product Category: ");
-                String catName = sc.nextLine();
-                while(!categoryList.contains(catName)){
-                    System.out.print("False category name. Try again:");
-                    catName = sc.nextLine();
-                }
-                List<Product> showProductsByCategory = new ArrayList<>();
-                for (Product product : products) {
-                    if (String.valueOf(product.getCategory()).equals(catName)) {
-                        showProductsByCategory.add(product);
-                    }
-                }
-                if(!showProductsByCategory.isEmpty()) {
-                    System.out.println(String.format("Products in category %s: ",catName) + showProductsByCategory);
-                }
-                else System.out.println(String.format("There are no products by category %s.", catName));
-            }
-            case 6 -> {
-                System.out.print("Asagi qiymet: ");
-                double asagi = sc.nextDouble();
-                System.out.print("Yuxari qiymet: ");
-                double yuxari = sc.nextDouble();
-
-                List<Product> showProductsByPrice = new ArrayList<>();
-                for (Product product : products) {
-                    if (asagi < product.getPrice() && product.getPrice() < yuxari) {
-                        showProductsByPrice.add(product);
-                    }
-                }
-                if(!showProductsByPrice.isEmpty()) {
-                    System.out.println(String.format("Products in price range %f - %f: ",asagi,yuxari) + showProductsByPrice);
-                }
-                else System.out.println(String.format("There are no products in price range %f - %f.", asagi, yuxari));
-            }
-            case 7 -> {
-                System.out.print("Enter product name for search: ");
-                String search = sc.nextLine();
-
-                List<Product> getProducts = new ArrayList<>();
-                for (Product product : products) {
-                    String name = product.getName();
-                    if (name.equals(search))
-                        getProducts.add(product);
-                }
-                if(!getProducts.isEmpty()) {
-                    System.out.println(String.format("There are %d products by name %s: ",getProducts.toArray().length,search) + getProducts);
-                }
-                else System.out.println(String.format("There are no products with name %s.", search) + getProducts);
             }
         }
     }
 }
+
