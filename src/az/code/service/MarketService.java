@@ -11,30 +11,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import static az.code.service.ProductService.searchProductByCode;
+
 public class MarketService {
-//    public MarketService() {
-//        products = new ArrayList<>();
-//    }
-//
-//    public void addSale(Product product) {
-//        product.setCode(1);
-//        products.add(product);
-//    }
     static List<Purchase> purchases = new ArrayList<>();
     static List<Long> purchaseIds = new ArrayList<>();
     static List<PurchaseItem> purchaseItemList = new ArrayList<>();
     static List<Long> productCodes = new ArrayList<>();
 
-    public static void saleLogic(int choice){
-        for(Purchase p:purchases){
+    public static void saleLogic(int choice) {
+        for (Purchase p : purchases) {
             purchaseIds.add(p.getId());
         }
-        for(Product pr:ProductService.products){
+        for (Product pr : ProductService.products) {
             productCodes.add(pr.getCode());
         }
 
-        Scanner sc =  new Scanner(System.in);
-        switch (choice){
+        Scanner sc = new Scanner(System.in);
+        switch (choice) {
             case 1 -> {
                 System.out.println("How many types of products will be sold: ");
                 int productsCount = Integer.valueOf(sc.nextLine());
@@ -52,105 +46,139 @@ public class MarketService {
                     str = sc.nextLine().split(":");
                     code = Long.valueOf(str[0]);
                     count = Integer.valueOf(str[1]);
-                    if (count>0) {
-                        for (Product p: ProductService.products){
-                            if (p.getCount()>=count && p.getCode()==code){
-                                totalPrice += (p.getPrice()*count);
-                                purchaseItemRandomId = (long) Math.random()*100000;
-                                for(PurchaseItem pI:purchaseItemList){
-                                    if(pI.getId()==purchaseItemRandomId){
-                                        purchaseItemRandomId = (long) Math.random()*100000;
+                    if (count > 0) {
+                        for (Product p : ProductService.products) {
+                            if (p.getCount() >= count && p.getCode() == code) {
+                                totalPrice += (p.getPrice() * count);
+                                purchaseItemRandomId = (long) Math.random() * 100000;
+                                for (PurchaseItem pI : purchaseItemList) {
+                                    if (pI.getId() == purchaseItemRandomId) {
+                                        purchaseItemRandomId = (long) Math.random() * 100000;
                                     }
                                 }
-                                p.setCount(p.getCount()-count);
-                                purchaseItem = new PurchaseItem(1L,p.getCode(),count);
+                                p.setCount(p.getCount() - count);
+                                purchaseItem = new PurchaseItem(1L, p.getCode(), count);
                                 purchaseItemList.add(purchaseItem);
-                                }
+                            }
                         }
-                    }
-                    else if(count<=0){
-                            System.out.println("<count> should be positive number");
-                        }
-                    }
-
-                LocalDateTime date = LocalDateTime.now();
-                long saleId = (long) (Math.random()*100001);
-                for(PurchaseItem pI:purchaseItemList){
-                    if(pI.getId()==saleId){
-                        saleId = (long) Math.random()*100000;
+                    } else if (count <= 0) {
+                        System.out.println("<count> should be positive number");
                     }
                 }
 
-                Purchase purchase = new Purchase(saleId,totalPrice,purchaseItemList, date);
+                LocalDateTime date = LocalDateTime.now();
+                long saleId = (long) (Math.random() * 100001);
+                for (PurchaseItem pI : purchaseItemList) {
+                    if (pI.getId() == saleId) {
+                        saleId = (long) Math.random() * 100000;
+                    }
+                }
+
+                Purchase purchase = new Purchase(saleId, totalPrice, purchaseItemList, date);
                 purchases.add(purchase);
-                System.out.printf("Sale created with id: %d, total price: %f date: %s",purchase.getId(),purchase.getTotalPrice(), date + "\n");
+                System.out.printf("Sale created with id: %d, total price: %f date: %s", purchase.getId(), purchase.getTotalPrice(), date + "\n");
             }
             case 2 -> {
                 //remove product from purchaseItem list (this returns product from purchaseList, does not delete purchase)
-                System.out.println("Enter purchase id you want to return: ");
-                long returnSaleId = sc.nextLong();
-
-                if(purchaseIds.contains(returnSaleId)){
-                    System.out.println("Enter product id: ");
-                    long removeProductCode = sc.nextLong();
-                    System.out.println("Enter count of products to return: ");
-                    int removeProductCount = sc.nextInt();
-
-                    if(productCodes.contains(removeProductCode)){
-                        for(PurchaseItem pi:purchaseItemList){
-                            if(pi.getProductCode()==removeProductCode && pi.getCount()==removeProductCount){
-                                purchaseItemList.remove(pi);
-//                                for(Purchase p:purchases){
-//                                    if(p.getId()==returnSaleId)
-//                                        purchases.remove(p);
-//                                }
-                            }
-                            else if (pi.getCount()>removeProductCount)
-                                System.out.printf("There were more products in this purchase than: %d. \n",removeProductCount);
-                            else System.out.println("Something went wrong.");
-                        }
-                    }else{
-                        System.out.printf("The product code: %d  for purchase %d is incorrect. \n",removeProductCode,returnSaleId);
+                long[] results = getReturnProductInfo();
+                long returnSaleId = results[0];
+                long returnProductCode = results[1];
+                int returnProductCount = (int) results[2];
+                for(Purchase p : purchases){
+                    if(p.getId()==returnSaleId){
+                        purchases.remove(p);
+                        break;
                     }
-                }else {
-                    System.out.printf("There is no sale with id %d \n",returnSaleId);
                 }
+
+                for (PurchaseItem pi : purchaseItemList) {
+                    if (pi.getProductCode() == returnProductCode && pi.getCount() == returnProductCount) {
+                        //return count of unsold products to what it was before sale
+                        searchProductByCode(returnProductCode).setCount(searchProductByCode(returnProductCode).getCount()+returnProductCount);
+                        purchaseItemList.remove(pi);
+                        break;
+                    } else if (pi.getCount() > returnProductCount)
+                        System.out.printf("There were more products in this purchase than: %d. \n", returnProductCount);
+                    else System.out.println("Something went wrong.");
+                }
+//            }else System.out.printf("The product code: %d  for purchase %d is incorrect. \n", returnProductCode, returnSaleId);
+//        }else System.out.printf("There is no sale with id %d \n", returnSaleId);
             }
-            case 3 ->{
-                System.out.println("Enter purchase id you want to delete: ");
+            case 3 -> {
+                System.out.print("Enter purchase id you want to delete: ");
                 long removeSaleId = sc.nextLong();
 
-                for(Purchase p:purchases){
-                    if(p.getId()==removeSaleId)
+                for (Purchase p : purchases) {
+                    if (p.getId() == removeSaleId)
                         purchases.remove(p);
                 }
             }
 
+
             case 4 -> {
-                System.out.println("All purchases: ");
-                for (Purchase p:purchases) {
+                System.out.printf("All purchases(%d): \n", purchases.size());
+                for (Purchase p : purchases) {
                     System.out.println("Purchase " + p.getId() + " totalPrice: " + p.getTotalPrice()
                             + " product count: " + p.getPurchaseItemsCount() + " date: " + p.getCreationDate());
                 }
             }
 
-            case 5->{
+            case 5 -> {
                 System.out.print("Enter start date <31.12.2000>: ");
-                String[] start =  sc.nextLine().split("\\.");
-                LocalDate startDate = LocalDate.of(Integer.valueOf(start[2]),Integer.valueOf(start[1]),Integer.valueOf(start[0]));
+                String[] start = sc.nextLine().split("\\.");
+                LocalDateTime startDate = LocalDateTime.of(Integer.parseInt(start[2]), Integer.parseInt(start[1]), Integer.parseInt(start[0]),
+                        LocalDateTime.now().getHour(), LocalDateTime.now().getMinute());
                 System.out.print("Enter end date <31.12.2000>: ");
-                String[] end =  sc.nextLine().split("\\.");
-                LocalDate endDate = LocalDate.of(Integer.valueOf(start[2]),Integer.valueOf(start[1]),Integer.valueOf(start[0]));
+                String[] end = sc.nextLine().split("\\.");
+                LocalDateTime endDate = LocalDateTime.of(Integer.parseInt(end[2]), Integer.parseInt(end[1]), Integer.parseInt(end[0]),
+                        LocalDateTime.now().getHour(), LocalDateTime.now().getMinute());
+
+                List<Purchase> results = getPurchasesBetweenDates(startDate, endDate);
+                System.out.printf("Results between: %s-%s:\n", Arrays.toString(start), Arrays.toString(end));
+                for (Purchase p : results)
+                    System.out.println(p);
             }
         }
     }
 
-    public static void main(String[] args) {
-        //testing
-        saleLogic(1);
-        saleLogic(1);
-        saleLogic(1);
-        saleLogic(5);
+    public static List<Purchase> getPurchasesBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Purchase> resultsPurchases = new ArrayList<>();
+        for (Purchase p : purchases) {
+            if (p.getCreationDate().isAfter(startDate) && p.getCreationDate().isBefore(endDate)) {
+                resultsPurchases.add(p);
+            }
+        }
+        return resultsPurchases;
     }
+
+    public static long[] getReturnProductInfo() {
+        long[] result;
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter purchase id you want to return: ");
+        long returnSaleId = sc.nextLong();
+        if (!purchaseIds.contains(returnSaleId)
+            return null;
+
+        System.out.println("Enter product id: ");
+        long returnProductCode = sc.nextLong();
+        if (!productCodes.contains(returnProductCode)
+            return null;
+
+        System.out.println("Enter count of products to return: ");
+        long returnProductCount = sc.nextLong();
+        if (returnProductCount >= searchProductByCode(returnProductCode).getCount())
+            return null;
+
+        result = new long[]{returnSaleId, returnProductCode, returnProductCount};
+        return result;
+    }
+
+//public static void main(String[] args) {
+//    //testing
+//    saleLogic(1);
+//    saleLogic(1);
+//    saleLogic(1);
+//    saleLogic(5);
+//}
 }
 

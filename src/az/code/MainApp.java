@@ -14,8 +14,8 @@ public class MainApp {
 
         int choice;
         boolean exit = false;
-
         choice = printMainMenu();
+
         do{
             switch (choice) {
                 case 1 -> printProductMenu();

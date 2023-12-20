@@ -32,15 +32,13 @@ public class ProductService {
                     if (product.getCode() == code) {
                         System.out.print("Enter new name([Enter]=pass): ");
                         String newName = sc.nextLine();
-                        if (newName.isEmpty()) {
+                        if (newName.isEmpty())
                             newName = product.getName();
-                        }
 
                         System.out.print("Enter new price([Enter]=pass): ");
                         double newPrice = sc.nextDouble();
-                        if (!sc.hasNextDouble()) {
+                        if (!sc.hasNextDouble())
                             newName = product.getName();
-                        }
 
                         System.out.print("Enter new count([Enter]=pass): ");
                         int newCount = sc.nextInt();
@@ -179,4 +177,13 @@ public class ProductService {
 
         return searchResults;
     }
+    public static Product searchProductByCode(long searchCode){
+        for (Product product : products) {
+            long code = product.getCode();
+            if (code == searchCode)
+                return product;
+        }
+        return null;
+    }
+
 }
