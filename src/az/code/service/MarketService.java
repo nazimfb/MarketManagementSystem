@@ -156,12 +156,12 @@ public class MarketService {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter purchase id you want to return: ");
         long returnSaleId = sc.nextLong();
-        if (!purchaseIds.contains(returnSaleId)
+        if (!purchaseIds.contains(returnSaleId))
             return null;
 
         System.out.println("Enter product id: ");
         long returnProductCode = sc.nextLong();
-        if (!productCodes.contains(returnProductCode)
+        if (!productCodes.contains(returnProductCode))
             return null;
 
         System.out.println("Enter count of products to return: ");
