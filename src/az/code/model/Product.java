@@ -1,5 +1,7 @@
 package az.code.model;
 
+import az.code.service.ProductService;
+
 public class Product {
     private long code;
     private String name;

@@ -18,7 +18,6 @@ Hər bir satış item-inin
             - Mehsul
             - Say
 
-
 IMarketable
  - Satislar
  - Mehsullar
@@ -57,7 +56,7 @@ Proses:
 1.2 2 secildikde satislar uzerinde aparila bilinecek emeliyyatlarla bagli secimler gosterilir:
 
     - 1 Yeni satis elave etmek - istifadeciden satis yaradilmasi ucun lazimi meulatlarin daxil edilmesi istenilir (mehsullarin kodlari)
-    - 2 Satisdaki hansisa mehsulun geri qaytarilmasi( satisdan cixarilmasi) - userden satisin,cixarilacaq mehsulun ve sayinin daxil edilmesi istenilir
+    - 2 Satisdaki hansisa mehsulun geri qaytarilmasi(satisdan cixarilmasi) - userden satisin,cixarilacaq mehsulun ve sayinin daxil edilmesi istenilir
     - 3 Satisin silinmesi - satisin nomresine esasen silinmesi
     - 4 Butun satislarin ekrana cixarilmasi (nomresi,meblegi,mehsul sayi,tarixi)
     - 5 Verilen tarix araligina gore satislarin gosterilmesi - userden qebul edilen iki tarix araligindaki satislarin gosterilmesi (nomresi,meblegi,mehsul sayi,tarixi)
